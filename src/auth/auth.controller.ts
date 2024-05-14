@@ -6,8 +6,6 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { UserService } from '../user/user.service';
-import { UserRegistrationDto } from 'src/user/dto/userRegistration.dto';
 import { AuthPayloadDto } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { LocalGuard } from './guards/local.guards';
@@ -15,26 +13,17 @@ import { LocalGuard } from './guards/local.guards';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   @Post('register')
-  register(@Body() credentials: UserRegistrationDto): string {
-    if (!credentials.username) {
+  register(@Body() authPayload: AuthPayloadDto): string {
+    if (!authPayload.username) {
       throw new HttpException('Username not provided', HttpStatus.BAD_REQUEST);
     }
-    if (!credentials.password) {
+    if (!authPayload.password) {
       throw new HttpException('Password not provided', HttpStatus.BAD_REQUEST);
     }
-    const { username, password } = credentials;
-    const existingUser = this.userService.findByUsername(username);
-    console.log(`username: ${username}\npassword: ${password}`);
-    if (existingUser) {
-      return 'Username already exists';
-    }
-    this.userService.register(username, password);
+    this.authService.registerUser(authPayload);
     return 'Registration successful';
   }
 
@@ -47,10 +36,4 @@ export class AuthController {
     }
     return user;
   }
-
-  // @Get('status')
-  // @UseGuards(JwtAuthGuard)
-  // status(Req() req) {
-  //   return req.user
-  // }
 }

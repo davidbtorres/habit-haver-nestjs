@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthPayloadDto } from './dto/auth.dto';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
@@ -11,14 +11,31 @@ export class AuthService {
   ) {}
 
   validateUser({ username, password }: AuthPayloadDto) {
+    console.log(
+      'in auth.service validateUser. attempting login with: ' +
+        username +
+        ', ' +
+        password,
+    );
     const user = this.userService.findByUsername(username);
+    console.log('user found: ' + user?.username);
     if (user && user.password === password) {
       console.log('user found and password accepted, about to sign');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userInfo } = user;
-      console.log('JWT_SECRET_KEY:', process.env.JWT_SECRET_KEY);
       return this.jwtService.sign(userInfo);
     }
     return undefined;
+  }
+
+  registerUser({ username, password }: AuthPayloadDto) {
+    const existingUser = this.userService.findByUsername(username);
+    if (existingUser) {
+      throw new HttpException(
+        'Username already exists',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    this.userService.register(username, password);
   }
 }
