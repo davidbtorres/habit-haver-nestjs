@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
+import { HabitDto } from 'src/habits/dto/habit.dto';
 
 export class UserDto {
   @IsNotEmpty()
@@ -12,4 +13,6 @@ export class UserDto {
   @IsNotEmpty()
   @IsString()
   password: string;
+
+  habits: HabitDto[];
 }

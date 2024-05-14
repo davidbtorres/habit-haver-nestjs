@@ -1,13 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { UserDto } from './dto/user.dto';
+import { HabitDto } from 'src/habits/dto/habit.dto';
 
 @Injectable()
 export class UserService {
-  private users: UserDto[] = [];
+  private users: UserDto[] = [
+    { id: '1', username: 'rolf', password: '1234', habits: [] },
+  ];
 
   register(username: string, password: string): UserDto {
     const id = String(this.users.length + 1);
-    const newUser: UserDto = { id, username, password };
+    const newUser: UserDto = {
+      id,
+      username,
+      password,
+      habits: [] as HabitDto[],
+    };
     this.users.push(newUser);
     return newUser;
   }
@@ -16,7 +24,7 @@ export class UserService {
     return this.users.find((user) => user.username === username);
   }
 
-  findBId(id: string): UserDto | undefined {
+  findById(id: string): UserDto | undefined {
     return this.users.find((user) => user.id === id);
   }
 
