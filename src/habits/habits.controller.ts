@@ -31,6 +31,5 @@ export class HabitsController {
 
     console.log(currentUser);
     return currentUser;
-    //return this.habitsService.addHabitToUser(userId, habitDto);
   }
 }
