@@ -1,12 +1,10 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req } from '@nestjs/common';
 import { HabitDto } from './dto/habit.dto';
 import { HabitsService } from './habits.service';
-import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { v4 as uuidv4 } from 'uuid';
 import { newHabitPayloadDto } from './dto/newHabitPayload.dto';
 
 @Controller('habits')
-@UseGuards(JwtAuthGuard)
 export class HabitsController {
   constructor(private readonly habitsService: HabitsService) {}
 
